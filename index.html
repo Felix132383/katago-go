@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="围棋（KataGo 版）：纯前端围棋对弈，内置基础 AI 与 KataGo 强 AI，免后端">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="围棋">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <title>围棋 · KataGo</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ==================== 设置（开局） ==================== -->
+  <section id="view-menu" class="view">
+    <div class="app-header">
+      <span class="app-title">⚫ 围棋 · KataGo</span>
+      <button id="btn-history" class="btn btn-ghost btn-sm">📋 历史对局</button>
+    </div>
+
+    <div class="menu-card">
+      <div class="form-row">
+        <label>对战模式</label>
+        <div class="seg" id="seg-mode">
+          <button data-mode="ai" class="seg-btn active">人机对战</button>
+          <button data-mode="local" class="seg-btn">本地双人</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>棋盘路数</label>
+        <div class="seg" id="seg-size">
+          <button data-size="9" class="seg-btn">9 路</button>
+          <button data-size="13" class="seg-btn">13 路</button>
+          <button data-size="19" class="seg-btn active">19 路</button>
+        </div>
+      </div>
+      <div class="form-row" id="row-ai">
+        <label>AI 强度</label>
+        <div class="seg" id="seg-engine">
+          <button data-engine="easy" class="seg-btn active">简单</button>
+          <button data-engine="medium" class="seg-btn">中等</button>
+          <button data-engine="katago" class="seg-btn" id="btn-engine-katago">KataGo ⚡</button>
+        </div>
+        <div class="form-hint" id="engine-hint"></div>
+      </div>
+      <div class="form-row" id="row-color">
+        <label>执子</label>
+        <div class="seg" id="seg-color">
+          <button data-color="black" class="seg-btn">执黑</button>
+          <button data-color="white" class="seg-btn">执白</button>
+          <button data-color="random" class="seg-btn active">随机</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>落子方式</label>
+        <div class="seg" id="seg-confirm">
+          <button data-confirm="0" class="seg-btn active">单击直接落子</button>
+          <button data-confirm="1" class="seg-btn">两次点击确认</button>
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn btn-primary btn-block">开始对局</button>
+
+      <div class="katago-status" id="katago-status">
+        <span class="ks-dot" id="ks-dot"></span><span id="ks-text">正在检测 KataGo…</span>
+      </div>
+      <p class="foot-note">纯前端应用 · 对局记录保存在本机 · 无需服务器</p>
+    </div>
+  </section>
+
+  <!-- ==================== 对局 ==================== -->
+  <section id="view-game" class="view hidden">
+    <div class="game-header">
+      <button id="btn-back" class="btn btn-ghost btn-sm">‹ 退出</button>
+      <span id="game-mode-label" class="game-mode-label"></span>
+      <span id="katago-badge" class="kb hidden">⚡ KataGo</span>
+      <button id="btn-save" class="btn btn-ghost btn-sm" title="保存并退出">💾</button>
+    </div>
+
+    <div class="players-row">
+      <div class="pcard" id="card-black">
+        <span class="stone-dot sd-black"></span>
+        <span id="name-black" class="pname">黑</span>
+        <span id="capture-black" class="pcapt"></span>
+        <span id="winrate-black" class="pwr"></span>
+      </div>
+      <div class="pcard" id="card-white">
+        <span class="stone-dot sd-white"></span>
+        <span id="name-white" class="pname">白</span>
+        <span id="capture-white" class="pcapt"></span>
+        <span id="winrate-white" class="pwr"></span>
+      </div>
+    </div>
+
+    <div class="board-wrap">
+      <canvas id="board-canvas"></canvas>
+      <div id="overlay" class="overlay hidden">
+        <div class="overlay-box">
+          <div id="overlay-title" class="overlay-title"></div>
+          <div id="overlay-sub" class="overlay-sub"></div>
+          <div id="overlay-score" class="overlay-score"></div>
+          <div class="overlay-btns">
+            <button id="btn-replay" class="btn btn-ghost">📼 复盘</button>
+            <button id="btn-new" class="btn btn-primary">再来一局</button>
+            <button id="btn-close" class="btn btn-ghost">返回</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="turn-bar" id="turn-bar">黑棋落子</div>
+
+    <div class="controls">
+      <button id="btn-undo" class="btn btn-ghost">悔棋</button>
+      <button id="btn-pass" class="btn btn-ghost">停一手</button>
+      <button id="btn-resign" class="btn btn-danger">认输</button>
+      <button id="btn-count" class="btn btn-ghost">数子</button>
+      <button id="btn-restart" class="btn btn-ghost">重开</button>
+    </div>
+  </section>
+
+  <!-- ==================== 复盘 ==================== -->
+  <section id="view-replay" class="view hidden">
+    <div class="game-header">
+      <button id="btn-replay-back" class="btn btn-ghost btn-sm">‹ 返回</button>
+      <span id="replay-title" class="game-mode-label"></span>
+    </div>
+    <div class="board-wrap">
+      <canvas id="replay-canvas"></canvas>
+    </div>
+    <div class="replay-bar">
+      <button id="rp-first" class="btn btn-ghost btn-sm">⏮</button>
+      <button id="rp-prev" class="btn btn-ghost btn-sm">◀</button>
+      <span id="rp-step" class="rp-step">0 / 0</span>
+      <button id="rp-next" class="btn btn-ghost btn-sm">▶</button>
+      <button id="rp-last" class="btn btn-ghost btn-sm">⏭</button>
+    </div>
+    <div id="replay-info" class="replay-info"></div>
+  </section>
+
+  <!-- ==================== 历史对局 ==================== -->
+  <section id="view-history" class="view hidden">
+    <div class="game-header">
+      <button id="btn-history-back" class="btn btn-ghost btn-sm">‹ 返回</button>
+      <span class="game-mode-label">历史对局</span>
+    </div>
+    <ul id="history-list" class="history-list"></ul>
+  </section>
+
+  <div id="toasts" class="toasts"></div>
+
+  <script src="lib/go-core.js"></script>
+  <script src="lib/go-ai.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/katago.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

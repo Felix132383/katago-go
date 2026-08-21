@@ -1,0 +1,6 @@
+node_modules/
+.npm-cache/
+*.log
+.DS_Store
+# 参考源码里的模型副本（正式模型在 katago/model.bin.gz）
+web-katrain-reference/katago-small.bin.gz

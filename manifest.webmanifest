@@ -1,0 +1,14 @@
+{
+  "name": "围棋 · KataGo",
+  "short_name": "围棋",
+  "description": "纯前端围棋对弈：内置基础 AI 与 KataGo 强 AI，免后端服务器",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f2e9",
+  "theme_color": "#2e6f6a",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

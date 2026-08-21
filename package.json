@@ -1,0 +1,27 @@
+{
+  "name": "katago-go",
+  "version": "1.0.0",
+  "description": "围棋对弈（纯前端，免后端）：内置基础 AI + KataGo 强 AI，iOS 移动端优先",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/smoke.js"
+  },
+  "keywords": [
+    "go",
+    "weiqi",
+    "katago",
+    "wasm",
+    "pwa"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "puppeteer-core": "^25.8.0"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-backend-wasm": "^4.22.0",
+    "@tensorflow/tfjs-backend-webgpu": "^4.22.0",
+    "pako": "^2.1.0"
+  }
+}
