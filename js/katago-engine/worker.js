@@ -232,6 +232,7 @@ async function handleMessage(msg) {
         await ensureModel(msg.modelUrl, msg.backend);
         post({
             type: 'katago:init_result',
+            id: msg.id,
             ok: true,
             backend: tf.getBackend(),
             modelName: loadedModelName
@@ -615,6 +616,7 @@ self.onmessage = (ev)=>{
         if (msg.type === 'katago:init') {
             post({
                 type: 'katago:init_result',
+                id: msg.id,
                 ok: false,
                 error: err instanceof Error ? err.message : String(err)
             });

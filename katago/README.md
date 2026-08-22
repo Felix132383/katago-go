@@ -10,7 +10,7 @@
 
 | 文件 | 状态 | 说明 |
 | --- | --- | --- |
-| `model.bin.gz` | ✅ **已就位** | web-katrain 自带小模型（3.8MB，KataGo v8 格式，已验证 gzip 可解压） |
+| `model.bin.gz` | ✅ **已就位** | web-katrain 自带小模型（3.65MB，KataGo v8 格式，已验证 gzip 可解压；**唯一需要的模型文件**，未压缩 `model.bin` 冗余已移除） |
 | `model-v7.bin.gz` | 存档 | 旧 b6c96（v7）——**引擎不支持 v7**，仅留档 |
 | `js/katago-engine/` | ✅ 已转译 | web-katrain 引擎 16 个文件 + utils（ESM，语法已校验） |
 

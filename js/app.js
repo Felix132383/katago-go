@@ -250,7 +250,8 @@
         current: g.current,
         history: history,
         komi: KOMI(g.size),
-        visits: 300,
+        // V1.2 优化：小棋盘搜索更深（9 路 800 / 13 路 600 / 19 路 400），棋力与耗时平衡
+        visits: g.size >= 15 ? 400 : g.size >= 11 ? 600 : 800,
       });
       if (!res.ok) throw new Error(res.error || '分析失败');
       state.katagoOk = true;

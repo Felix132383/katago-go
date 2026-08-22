@@ -32,7 +32,7 @@ const CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
       if (d.type === 'katago:analyze_result') resolveAnalyze(d);
     };
     worker.onerror = (e) => { steps.push('WORKER-ERR ' + e.message); resolveInit({ ok: false, error: e.message }); resolveAnalyze({ ok: false, error: e.message }); };
-    worker.postMessage({ type: 'katago:init', modelUrl: 'model', modelData: buf.buffer, backend: 'webgpu' });
+    worker.postMessage({ type: 'katago:init', modelUrl: location.origin + '/katago/model.bin.gz', backend: 'cpu' });
     const init = await Promise.race([initP, new Promise((res) => setTimeout(() => res({ ok: false, error: 'init-timeout-60s' }), 60000))]);
     if (!init.ok) return { ok: false, steps, initError: init.error };
     steps.push('INIT-OK backend=' + init.backend + ' model=' + init.modelName + ' ' + Math.round(performance.now() - t0) + 'ms');
@@ -40,7 +40,7 @@ const CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
     const size = 9;
     const empty = Array.from({ length: size }, () => Array(size).fill(null));
     worker.postMessage({
-      type: 'katago:analyze', id: 1, modelUrl: 'model',
+      type: 'katago:analyze', id: 1, modelUrl: location.origin + '/katago/model.bin.gz',
       board: empty, currentPlayer: 'black', moveHistory: [], komi: 5.5,
       visits: 100, maxTimeMs: 30000, topK: 3, analysisPvLen: 2,
     });
